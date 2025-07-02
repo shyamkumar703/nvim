@@ -1,14 +1,16 @@
 return {
     "nvim-telescope/telescope.nvim",
 
-    tag = "0.1.5",
+    --tag = "0.1.5",
 
     dependencies = {
-        "nvim-lua/plenary.nvim"
+        "nvim-lua/plenary.nvim",
+        'morhetz/gruvbox'
     },
 
     config = function()
         require('telescope').setup({})
+        ColorMyPencils()
 
         local builtin = require('telescope.builtin')
         vim.keymap.set('n', '<leader>pf', builtin.find_files, {})

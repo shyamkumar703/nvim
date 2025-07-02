@@ -10,9 +10,15 @@ return {
         "hrsh7th/nvim-cmp",
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
-        "j-hui/fidget.nvim",
+        "j-hui/fidget.nvim"
     },
-
+    opts = {
+        servers = {
+            sourcekit = {
+                cmd = { "~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp" },
+            },
+        },
+    },
     config = function()
         local cmp = require('cmp')
         local cmp_lsp = require("cmp_nvim_lsp")
@@ -30,13 +36,25 @@ return {
                 "lua_ls",
                 "rust_analyzer",
                 "gopls",
-                "zls",
             },
             handlers = {
                 function(server_name) -- default handler (optional)
-
                     require("lspconfig")[server_name].setup {
                         capabilities = capabilities
+                    }
+                end,
+
+                ["clangd"] = function()
+                    require("lspconfig").clangd.setup {
+                        capabilities = capabilities,
+                        cmd = { "clangd", "--compile-commands-dir=./" },
+                    }
+                end,
+
+                ["zls"] = function()
+                    require("lspconfig").zls.setup {
+                        cmd = { "/Users/shyamkumar/.zig/zls/zig-out/bin/zls" },
+                        capabilities = capabilities,
                     }
                 end,
 
@@ -46,7 +64,7 @@ return {
                         capabilities = capabilities,
                         settings = {
                             Lua = {
-				    runtime = { version = "Lua 5.1" },
+                                runtime = { version = "Lua 5.1" },
                                 diagnostics = {
                                     globals = { "vim", "it", "describe", "before_each", "after_each" },
                                 }
@@ -59,7 +77,7 @@ return {
 
         local lspconfig = require("lspconfig")
         local opts = { noremap = true, silent = true }
-        local on_attach = function(_, bufnr)
+        local on_attach = function(client, bufnr)
             opts.buffer = bufnr
 
             opts.desc = "Show line diagnostics"
@@ -67,11 +85,22 @@ return {
 
             opts.desc = "Show documentation for what is under cursor"
             vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+            if client.server_capabilities.inlayHintProvider then
+                vim.lsp.inlay_hint.enable(bufnr, true)
+            end
         end
 
-        lspconfig["sourcekit"].setup({
-            capabilities = capabilities,
+        lspconfig.sourcekit.setup({
+            -- capabilities = capabilities,
+            capabilities = {
+                workspace = {
+                    didChangeWatchedFiles = {
+                        dynamicRegistration = true,
+                    },
+                },
+            },
             on_attach = on_attach,
+
         })
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -91,9 +120,10 @@ return {
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' }, -- For luasnip users.
+                { name = 'nvim_lsp_signature_help' },
             }, {
-                { name = 'buffer' },
-            })
+                    { name = 'buffer' },
+                })
         })
 
         vim.diagnostic.config({
@@ -107,5 +137,6 @@ return {
                 prefix = "",
             },
         })
+        vim.api.nvim_set_hl(0, "DiagnosticError", { fg = "#CC241D" })
     end
 }

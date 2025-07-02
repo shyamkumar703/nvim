@@ -13,9 +13,9 @@ vim.keymap.set("n", "m", "%")
 vim.keymap.set("v", "m", "%")
 
 -- empty line below cursor
-vim.keymap.set('n', 'z', 'm`o<Esc>``')
+-- vim.keymap.set('n', 'z', 'm`o<Esc>``')
 -- empty line below cursor
-vim.keymap.set('n', 'Z', 'm`O<Esc>``')
+-- vim.keymap.set('n', 'Z', 'm`O<Esc>``')
 
 
 vim.keymap.set("n", "<leader>vwm", function()

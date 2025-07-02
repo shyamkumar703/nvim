@@ -13,5 +13,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
     spec = "shyam.lazy",
-    change_detection = { notify = false }
+    change_detection = { notify = false },
+    { 'zefei/vim-colortuner', lazy = false }
 })
