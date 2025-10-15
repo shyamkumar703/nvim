@@ -17,7 +17,11 @@ return {
         end
     },
     {
-        'morhetz/gruvbox'
+        'morhetz/gruvbox',
+        config = function()
+            vim.cmd("colorscheme gruvbox")
+            ColorMyPencils()
+        end
     },
     {
         'sainnhe/gruvbox-material'

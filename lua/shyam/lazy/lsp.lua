@@ -15,7 +15,8 @@ return {
     opts = {
         servers = {
             sourcekit = {
-                cmd = { "~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp" },
+                cmd = {
+                    "~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp" },
             },
         },
     },
@@ -32,10 +33,11 @@ return {
         require("mason").setup()
         require("mason-lspconfig").setup({
             ensure_installed = {
-                "clangd",
                 "lua_ls",
                 "rust_analyzer",
                 "gopls",
+                "ols",
+                "zls"
             },
             handlers = {
                 function(server_name) -- default handler (optional)
@@ -44,16 +46,10 @@ return {
                     }
                 end,
 
-                ["clangd"] = function()
-                    require("lspconfig").clangd.setup {
-                        capabilities = capabilities,
-                        cmd = { "clangd", "--compile-commands-dir=./" },
-                    }
-                end,
 
                 ["zls"] = function()
                     require("lspconfig").zls.setup {
-                        cmd = { "/Users/shyamkumar/.zig/zls/zig-out/bin/zls" },
+                        cmd = { "/opt/homebrew/bin/zls" },
                         capabilities = capabilities,
                     }
                 end,
@@ -99,6 +95,7 @@ return {
                     },
                 },
             },
+            filetypes = { "swift" }, -- Only attach to Swift files
             on_attach = on_attach,
 
         })
@@ -122,8 +119,8 @@ return {
                 { name = 'luasnip' }, -- For luasnip users.
                 { name = 'nvim_lsp_signature_help' },
             }, {
-                    { name = 'buffer' },
-                })
+                { name = 'buffer' },
+            })
         })
 
         vim.diagnostic.config({

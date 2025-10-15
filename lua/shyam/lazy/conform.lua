@@ -9,7 +9,7 @@ return {
                 swift = { "swiftformat" },
             },
             format_on_save = function(bufnr)
-                local ignore_filetypes = { "oil" }
+                local ignore_filetypes = { "oil", "c", "cpp" }
                 if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
                     return
                 end
